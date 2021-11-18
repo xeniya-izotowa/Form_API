@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Determine the gender of a name</title>
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+    
+    <div class="main_window">
+        <Form id="form" onsubmit="return false" name="determine the gender of a name" enctype="multipart/form-data">
+       
+            <div class="avatar_user">
+                <div class="img_wrapper">
+                    <img id="img_gender" src="./not defined.png" alt="image render">
+                </div>
+            </div>
+            <div class="info_user">
+
+                <label class="info_user_label">Determine the gender of a name</label>
+
+                <input id="name_user" class="info_user_name" type="text" placeholder="Name">
+
+                <button id="heck_name_btn" class="info_user_check_name">Check name</button>
+                <button id="clear_btn" class="info_user_clear">Clear</button>
+
+                <Label class="info_user_colum_labels">Name</Label>
+                <input class="info_user_colum_inputs"  id="input_user_name" readonly type="text" value="-">
+                <Label class="info_user_colum_labels">Data rows examined</Label>
+                <input class="info_user_colum_inputs"  id="input_user_data_rows" readonly type="text" value="-">
+                <Label class="info_user_colum_labels">Gender</Label>
+                <input class="info_user_colum_inputs"  id="input_user_gender" readonly type="text" value="-">
+                <Label class="info_user_colum_labels">Probability</Label>
+                <input class="info_user_colum_inputs"  id="input_user_probability" readonly type="text" value="-">
+
+            </div>
+        </Form>
+
+    </div>
+</body>
+
+<script>
+    heck_name_btn.addEventListener("click", send_request);
+    clear_btn.addEventListener("click", clear_from);
+
+    function send_request(){
+
+        let url = `https://api.genderize.io?name=${name_user.value}`;
+        
+        let user_params;       
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {console.log(data); user_params = data})
+
+            .then(data =>
+            {
+            input_user_name.value = user_params.name;
+            input_user_data_rows.value = user_params.count;
+            input_user_probability.value = Math.round(user_params.probability * 100) + "%"; 
+
+            if (user_params.gender != null){
+                input_user_gender.value = user_params.gender;
+                img_gender.src = `./${user_params.gender}.png`;
+            }
+            else {
+                input_user_gender.value = "not defined";
+                img_gender.src = "./not defined.png";
+            }
+
+        });
+    }
+
+    function clear_from(){
+        name_user.value = "";
+        input_user_name.value = "-";
+        input_user_data_rows.value = "-";
+        input_user_gender.value = "-";
+        input_user_probability.value = "-";
+        img_gender.src = "./not defined.png";
+    };
+</script>
+
+
+</html>
